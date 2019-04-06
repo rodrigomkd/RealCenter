@@ -1,4 +1,3 @@
-//https://www.uno-de-piera.com/login-con-angularjs-utilizando-cookies-con-el-modulo-ngcookies/
 RCenterPointApp.run(function($rootScope, $location) {
     $rootScope.location = $location;
 	$rootScope.$on('$routeChangeStart', function (event) {
@@ -232,10 +231,22 @@ RCenterPointApp.controller('RequestPasswordCtrl', function($scope, $http, $log, 
 					$scope.request_password_error = true;
 					$scope.request_password_error_msg = "No hay una cuenta asociada a este correo electrónico.";
 				}else{
-					RCService.sendEmail("Recuperación de Contraseña","Hola "+result.name+", tu contraseña para ingresar al sistema es: " + result.password, client.email).then(function(result2){					
-						alert("Se ha enviado un correo electrónico con la contraseña.");
-						$location.path("/login");
-					});				
+					
+					if(result.active == 0){				
+						var password = Date.now();
+						result.active = 1;
+						result.pwd1 = password;
+						result.verification_date = $filter('date')(new Date(), 'dd/MM/yyyy');
+						result.password = password;
+						RCService.updateValidClient(result).then(function(result2){ });
+					}
+					
+					alert("Se ha enviado la contraseña a tu correo electrónico.");
+					$location.path("/login");
+					
+					RCService.sendEmail("Recuperación de Contraseña","Hola " + result.name + ", tu contraseña para ingresar al sistema de Puntos 'Real Center' es: " 
+					+ result.password, client.email).then(function(result2){						
+					});		
 				}
 			});
 	   }

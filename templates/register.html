@@ -1,0 +1,43 @@
+<br>
+<br>
+<br>
+<div class="contact-form">
+    <form ng-submit="registerClient(client)" class="form-horizontal col-md-8">
+		<h4>Verificación de Cuenta</h4>
+		<br>
+		<p>Hola {{name}}!
+		Para completar tu registro en Plaza Real Center es necesario que ingreses
+		una contraseña para activar tu cuenta y puedas consultar el saldo de tus puntos en el
+		momento que tu quieras, tu usuario es el correo proporcionado en tu registro.
+		</p>
+		<br>
+		<br>
+		<div class="form-group">
+            <label for="name" class="col-md-2">E-mail</label>
+            <div class="col-md-10">
+                <input ng-model="client.email" type="text" class="form-control" ng-model="email" id="pwd1" placeholder="Ingresar contraseña" readonly>
+            </div>
+        </div>
+		
+        <div class="form-group">
+            <label for="name" class="col-md-2">Contraseña</label>
+            <div class="col-md-10">
+                <input type="password" class="form-control" ng-model="client.pwd1" id="pwd1" placeholder="Ingresar contraseña" required>
+            </div>
+        </div>
+ 
+        <div class="form-group">
+            <label for="email" class="col-md-2">Confirmar</label>
+            <div class="col-md-10">
+                <input type="password" class="form-control" ng-model="client.pwd2" id="pwd2" placeholder="Confirmar contraseña" required>
+				<span ng-show="register_error" class="help-block"><font color="red">{{register_error_msg}}</font></span>
+			</div>
+        </div>
+ 
+        <div class="form-group">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-primary">Aceptar</button>
+            </div>
+        </div>
+    </form>
+</div>

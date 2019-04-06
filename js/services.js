@@ -1,14 +1,12 @@
-//angular.module('starter.services', [])
-
 RCenterPointApp.factory('RCService', function($http) {
   var service = {};
-  var url = "http://nomada.com.mx/cardpoint/js/";
+  var url = "http://tarjeta.realcenter.com.mx/intranet/js/";
 	
 	service.getClient = function(clientid){		
 		return $http.post(url + "getClient.php", {"clientid" : clientid})
-			.then( function(res) { //success callback
+			.then( function(res) {
 			return res.data;
-		},function(err){ //error callback
+		},function(err){
 			console.log(err)
 		})
 	};
@@ -17,18 +15,18 @@ RCenterPointApp.factory('RCService', function($http) {
 		return $http.post(url + "updateValidClient.php", {"verification_date" : 
 			client.verification_date, "active" : 1, "password" : client.pwd1,
 			"clientid" : client.clientid })
-			.then( function(res) { //success callback
+			.then( function(res) {
 				return res.data;
-		},function(err){ //error callback
+		},function(err){
 			console.log(err)
 		})
 	};
 	
 	service.getClientByEmail = function(email){
 		return $http.post(url + "getClientByEmail.php", {"email" : email})
-			.then( function(res) { //success callback
+			.then( function(res) {
 			return res.data;
-		},function(err){ //error callback
+		},function(err){
 			alert("ERROR: " + err);
 			console.log(err)
 		})
@@ -47,19 +45,28 @@ RCenterPointApp.factory('RCService', function($http) {
 	//get Total POINTS
 	service.getPointsByClient = function(clientid){
 		return $http.post(url + "getPointsByClient.php", {"clientid" : clientid})
-			.then( function(res) { //success callback
+			.then( function(res) {
 				return res.data;
-		},function(err){ //error callback
+		},function(err){
 			alert("ERROR: " + err);
 			console.log(err)
 		})
 	};
 	
 	service.sendEmail = function(subject, message, to){
-		return $http.post(url + "sendEmail.php", {"subject" : subject, "message" : message, "to" : to})
-			.then( function(res) { //success callback
-				return res.data;
-		},function(err){ //error callback
+		$http.post(url + "getConfigEmail.php", {'configid' : 1})
+			.then( function(res) {
+				var email = res.data.email;
+				var password = res.data.password;
+				$http.post(url + "sendEmail.php", {"subject" : subject, "message" : message, "to" : to,
+					"email" : email, "password" : password })
+					.then( function(res) {
+						return res.data;
+				},function(err){
+					alert("ERROR: " + err);
+					console.log(err)
+				})
+		},function(err){
 			alert("ERROR: " + err);
 			console.log(err)
 		})
