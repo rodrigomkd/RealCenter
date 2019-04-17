@@ -1,6 +1,6 @@
 RCenterPointApp.factory('RCService', function($http) {
   var service = {};
-  var url = "http://tarjeta.realcenter.com.mx/intranet/js/";
+  var url = "{replace_URL}";
 	
 	service.getClient = function(clientid){		
 		return $http.post(url + "getClient.php", {"clientid" : clientid})
@@ -75,6 +75,17 @@ RCenterPointApp.factory('RCService', function($http) {
 	//get historial points by Client
 	service.getPointsByClientId = function(clientid){
 		return $http.post(url + "getPointsByClientDetails.php", {"clientid" : clientid})
+			.then( function(res) {
+				return res.data;
+		},function(err){
+			alert("ERROR: " + err.status);
+			console.log(err)
+		})
+	};
+
+	//get points from verification
+	service.getVerificationPointsById = function(clientid){
+		return $http.post(url + "getVerificationPointsById.php", {"clientid" : clientid})
 			.then( function(res) {
 				return res.data;
 		},function(err){

@@ -33,11 +33,16 @@ body {
                     <h3>Hola {{name}}!</h3>
 					<br>
 					<h4>
-					El total de tus puntos al día de hoy son: <b>{{points | number}}</b>
+					El total de tus puntos vigentes son: <b>{{points | number}}</b>
 					</h4>
 				</div>
 				<br>
 				<br>
+                <div ng-show="noValidPoints.length > 0">
+                    <ul>
+                        <li ng-repeat="noPoints in noValidPoints">Puntos caducados del {{ noPoints.start_date }} al {{ noPoints.next_date }}: {{ noPoints.points | number }}</li>
+                    <ul>
+                </div>
                 <div class="form-group">
                     <label class="" for="Search">Buscar: </label>
                     <input type="text" name="search" class="form-control" title="Search" 
@@ -74,7 +79,7 @@ body {
 					</tr>
                 </thead>
 				<tbody>
-                    <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse | filter:searchText as results">
+                    <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse | filter:searchText as results" style="color: {{ item.style }}">
                         <td>{{$index + 1}}</td>
                         <td>{{item.commerce_name}}</td>
                         <td>{{item.buy_date}}</td>

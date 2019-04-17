@@ -27,6 +27,7 @@ RCenterPointApp.controller('HomeController', function($scope, RCService, $filter
 	$scope.isLogin = false;
 	
 	$scope.items = {};
+	$scope.noValidPoints = {};
 	$scope.search = "";
 	$scope.pageSize = "10";
 	//variables to table pagination 
@@ -54,9 +55,17 @@ RCenterPointApp.controller('HomeController', function($scope, RCService, $filter
 			$scope.points = result.total_points;
 		}		
 	});
+
+	RCService.getVerificationPointsById(clientid).then(function(result){
+		if(result[0] == null){
+			$scope.noValidPoints = {};
+		}else{
+			$scope.noValidPoints = result;
+		}	
+	});
 	
 	$scope.setPageSize = function () {
-	   $scope.itemsPerPage = $scope.pageSize;	   
+	   $scope.itemsPerPage = $scope.pageSize;
 	   var decimalGap = $scope.items.length / $scope.itemsPerPage;
 	   var roundGap = Math.round($scope.items.length / $scope.itemsPerPage);
 	   if(roundGap < decimalGap){
@@ -157,10 +166,6 @@ RCenterPointApp.controller('LoginCtrl', function($scope, $http, $log, RCService,
 			}else{
 				if(client.email == result.email && client.password == result.password){
 					//add session
-					//user test: rodrigo@gmail.com
-					//password: 123456
-					//alert(result.clientid);
-					//$cookies.clientid = result.clientid;
 					window.sessionStorage['clientid'] = result.clientid;
 					$location.path("/home");
 				}else{
