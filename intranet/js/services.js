@@ -1,6 +1,6 @@
 realCenterApp.factory('RCService', function($http) {
   var service = {};
-  var url = "http://tarjeta.realcenter.com.mx/intranet/js/";
+  var url = "http://nomada.com.mx/apps/realcenter/intranet/js/";
 	var role = "";
 	
 	function getDate(date){
@@ -249,6 +249,17 @@ realCenterApp.factory('RCService', function($http) {
 			console.log(err)
 		})
 	};
+
+	service.saveVerificationPoints = function(c){
+		return $http.post(url + "saveVerificationPoints.php", {'clientid' : c.clientid, 
+			'start_date' : c.start_date })
+			.then( function(res) {
+				return res.data;
+		},function(err){
+			alert("ERROR: " + err);
+			console.log(err)
+		})
+	};
 	
 	service.updateComment = function(c){
 		return $http.post(url + "updateComment.php", {'commentsid' : c.commentsid, 
@@ -347,6 +358,39 @@ realCenterApp.factory('RCService', function($http) {
 			.then( function(res) {
 				return res.data;
 		},function(err){
+			console.log(err)
+		})
+	};
+
+	//get historial points by Client
+	service.getPointsByClientId = function(clientid){
+		return $http.post(url + "getPointsByClientDetails.php", {"clientid" : clientid})
+			.then( function(res) {
+				return res.data;
+		},function(err){
+			alert("ERROR: " + err.status);
+			console.log(err)
+		})
+	};
+
+	//get points from verification
+	service.getVerificationPointsById = function(clientid){
+		return $http.post(url + "getVerificationPointsById.php", {"clientid" : clientid})
+			.then( function(res) {
+				return res.data;
+		},function(err){
+			alert("ERROR: " + err.status);
+			console.log(err)
+		})
+	};
+
+	//get Total POINTS
+	service.getPointsByClient = function(clientid){
+		return $http.post(url + "getPointsByClient.php", {"clientid" : clientid})
+			.then( function(res) {
+				return res.data;
+		},function(err){
+			alert("ERROR: " + err);
 			console.log(err)
 		})
 	};

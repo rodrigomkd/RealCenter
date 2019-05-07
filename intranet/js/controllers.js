@@ -295,9 +295,10 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 	   client.colony = client.colony.toUpperCase();
 
 	   if($scope.clientid == 0){		   
-		   RCService.getClientByCredential(client.credential_number.trim()).then(function(result_credential){					
+		   RCService.getClientByCredential(client.credential_number.trim()).then(function(result_credential){				
 				if(typeof result_credential.credential_number === "undefined"){				 
 				   var referenceid = Date.now();
+				   //save client
 					$http.post(url + 'pushData.php', { 'credential_number' : client.credential_number, 
 					'name': client.name, 'last_name': client.last_name, 'email': client.email, 
 					'phone': client.phone, 'birthdate': client.birthdate, 'register_date': $scope.client.register_date,
@@ -307,6 +308,13 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 						alert("Se guardó el nuevo Cliente correctamente.");
 						$location.path("/list-clients");
 						
+						//save verification points
+						RCService.getClientByCredential(client.credential_number.trim()).then(function(result_client){
+							RCService.saveVerificationPoints(result_client.clientid, $scope.client.register_date).then(function(result_verification){
+
+							});
+						});
+
 						RCService.sendEmail("Verificación de Cuenta","Hola "+client.name+", para validar tu cuenta en Real Center "+
 							"debes ingresar al siguiente enlace y crear una nueva contraseña: " + url_users + "#/register/" 
 							+ referenceid, client.email).then(function(result3){ 																
@@ -315,7 +323,7 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 					.error(function(err) {
 						alert("ERROR: Ocurrió un error al guardar el Cliente.");
 						$log.error(err);
-					})			
+					})	
 			   }else{
 				   $scope.credential_number_error = true;
 				   $scope.credential_number_error_msg = "No. de Credencial no disponible, favor de ingresar otra Credencial.";
@@ -3267,6 +3275,138 @@ realCenterApp.controller('ReportClientPointsCtrl', function($scope, $http, $log,
 			$scope.setPageSize();
 		});
 	};
+});
+
+realCenterApp.controller('ReportClientPointsDetailsCtrl', function($scope, RCService, $filter, $routeParams) {
+	$scope.name = "";
+	$scope.points = "";
+	$scope.isLogin = false;
+	
+	$scope.items = {};
+	$scope.noValidPoints = {};
+	$scope.search = "";
+	$scope.pageSize = "10";
+	//variables to table pagination 
+	$scope.gap = 5;    
+    $scope.filteredItems = [];
+    $scope.groupedItems = [];
+    $scope.itemsPerPage = 10;
+    $scope.pagedItems = [];
+    $scope.currentPage = 0;
+
+    $scope.test = "red";
+	
+	RCService.getPointsByClientId($routeParams.clientId).then(function(result){
+		$scope.items = result;
+		$scope.setPageSize();
+	});
+
+	RCService.getClient($routeParams.clientId).then(function(result){
+		$scope.name = result.name;
+	});
+	
+	RCService.getPointsByClient($routeParams.clientId).then(function(result){
+		if(result.total_points == null){
+			$scope.points = 0;
+		}else{
+			$scope.points = result.total_points;
+		}		
+	});
+
+	RCService.getVerificationPointsById($routeParams.clientId).then(function(result){
+		if(result[0] == null){
+			$scope.noValidPoints = {};
+		}else{
+			$scope.noValidPoints = result;
+		}	
+	});
+	
+	$scope.setPageSize = function () {
+	   $scope.itemsPerPage = $scope.pageSize;
+	   var decimalGap = $scope.items.length / $scope.itemsPerPage;
+	   var roundGap = Math.round($scope.items.length / $scope.itemsPerPage);
+	   if(roundGap < decimalGap){
+		   roundGap++;
+	   }
+	   
+	   $scope.gap = roundGap;
+	   $scope.search();
+	};
+    // init
+    $scope.sort = {       
+                sortingOrder : 'id',
+                reverse : false
+            };
+				
+    var searchMatch = function (haystack, needle) {
+        if (!needle) {
+            return true;
+        }
+        return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
+    };
+
+    // init the filtered items
+    $scope.search = function () {
+        $scope.filteredItems = $filter('filter')($scope.items, function (item) {
+            for(var attr in item) {
+				//alert(attr);
+                if (searchMatch(item[attr], $scope.query))
+                    return true;
+            }
+            return false;
+        });
+        // take care of the sorting order
+        if ($scope.sort.sortingOrder !== '') {
+            $scope.filteredItems = $filter('orderBy')($scope.filteredItems, $scope.sort.sortingOrder, $scope.sort.reverse);
+        }
+        $scope.currentPage = 0;
+        // now group by pages
+        $scope.groupToPages();
+    };
+    
+    // calculate page in place
+    $scope.groupToPages = function () {
+        $scope.pagedItems = [];
+        
+        for (var i = 0; i < $scope.filteredItems.length; i++) {
+            if (i % $scope.itemsPerPage === 0) {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+            } else {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+            }
+        }
+    };
+    
+    $scope.range = function (size,start, end) {
+        var ret = [];        
+        console.log(size,start, end);
+                      
+        if (size < end) {
+            end = size;
+            start = size-$scope.gap;
+        }
+        for (var i = start; i < end; i++) {
+            ret.push(i);
+        }        
+         console.log(ret);        
+        return ret;
+    };
+    
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+        }
+    };
+    
+    $scope.nextPage = function () {
+        if ($scope.currentPage < $scope.pagedItems.length - 1) {
+            $scope.currentPage++;
+        }
+    };
+    
+    $scope.setPage = function () {
+        $scope.currentPage = this.n;
+    };
 });
 
 realCenterApp.controller('ReportClientRegisterCtrl', function($scope, $http, $log, $routeParams, $filter, $location, RCService) {
