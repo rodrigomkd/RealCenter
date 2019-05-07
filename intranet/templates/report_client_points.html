@@ -101,13 +101,14 @@
 						<th class="zip" custom-sort order="'zip'" sort="sort" style="cursor: pointer;">Código Postal&nbsp;</th>
 						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Sexo&nbsp;</th>
 						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Monto&nbsp;</th>
-						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Puntos&nbsp;</th>
+						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Puntos Cad.&nbsp;</th>
+						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Puntos Vig.&nbsp;</th>
 					</tr>
                 </thead>
 				<tbody>
                     <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse | filter:searchText as results">
                         <td>{{$index + 1}}</td>
-                        <td>{{item.credential_number}}</td>
+                        <td><a href="#/report-client-points-details/{{item.clientid}}">{{item.credential_number}}</a></td>
                         <td>{{item.name}}</td>
 						<td>{{item.last_name}}</td>
                         <td>{{item.email}}</td>
@@ -118,6 +119,7 @@
 						<td>{{item.zip}}</td>
 						<td>{{item.gender}}</td>
 						<td>{{item.quantity | currency}}</td>
+						<td><font color="red">{{item.no_valid_points | number}}</font></td>
 						<td><b>{{item.total_points | number}}</b></td>
                     </tr>
                 </tbody>
