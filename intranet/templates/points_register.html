@@ -1,0 +1,152 @@
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css" />
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
+<!-- (Optional) Latest compiled and minified JavaScript translation files -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script>
+
+		<div class="container">
+			<br>
+			<br>
+			<br>
+			<!--<div class="panel panel-default">-->
+				<div class="panel-heading">
+	                <h2 class="panel-title">Registro Puntos</h2>
+	            </div>
+				<form ng-submit="save(point)" class="form-horizontal" id="pointForm" name="pointForm" novalidate>
+	                        <div class="form-group" ng-class="{ 'has-error': pointForm.credential_number.$invalid && submitted }">
+	                            <label for="inputName" class="col-lg-2 control-label">No. Credencial</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="point.credential_number" 
+									type="text" class="form-control" 
+									id="credential_number" name="credential_number" 
+									placeholder="Ex. MRCXXXX" required>
+									<span ng-show="credential_number_error" class="help-block"><font color="red">{{credential_number_error_msg}}</font></span>                       
+								</div>							
+	                        </div>
+							
+							<div class="form-group" ><!--ng-class="{ 'has-error': clientForm.birthdate.$invalid && submitted }">-->
+	                            <label for="inputSubject" class="col-lg-2 control-label">Fecha Compra</label>
+	                            <div class="col-lg-10">
+									<div class='input-group date' id='datetimepicker1'>	
+										<input ng-model="buy_date" 
+											type="text" class="form-control" 							 
+											placeholder="DD/MM/YYYY" required id="buy_date" 
+											name="buy_date" editable="false"  /> <!-- ng-bind="buy_date | buy_date: 'dd/MM/yyyy'" -->
+											<span class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar" onclick="setDatePicker()"></span>
+									</div>
+									<span ng-show="buy_date_error" class="help-block"><font color="red">Ingresar una Fecha de Compra válida.</font></span>
+								</span>
+									
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': pointForm.register_date.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Fecha de Registro</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="point.register_date" 
+											type="text" class="form-control" 
+											id="register_date" name="register_date" 
+											placeholder="Fecha de Registro" readonly style="background: white"/>
+											<p ng-show="clientForm.register_date.$invalid && !clientForm.register_date.$pristine" class="help-block">Enter a valid email.</p>
+									
+	                            </div>
+	                        </div>							
+																					
+							<div class="form-group" ng-class="{ 'has-error': pointForm.commerce.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Negocio</label>
+	                            <div class="col-lg-10">
+									<select class="form-control" ng-model="point.commerce" id="commerce" name="commerce" ng-change="setPoints()">
+										  <option ng-repeat="c in commerces" value="{{c}}" data-live-search="true">{{c.commerce_name}}</option>
+									</select>
+									<span ng-show="commerce_error" class="help-block"><font color="red">Seleccionar un Negocio.</font></span>
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': pointForm.quantity.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Monto</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="point.quantity" 
+											type="text" class="form-control" 
+											id="quantity" name="quantity" 
+											placeholder="Monto" ng-change="setPoints()" required />
+									<span ng-show="quantity_error" class="help-block"><font color="red">El Monto es requerido.</font></span>
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': pointForm.comments.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Nota</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="point.comments" 
+											type="text" class="form-control" 
+											id="comments" name="comments" 
+											placeholder="Comentarios" />
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': pointForm.ticket_number.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">No. Ticket</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="point.ticket_number" 
+											type="text" class="form-control" 
+											id="ticket_number" name="ticket_number" 
+											placeholder="Número de Ticket" required />
+									<span ng-show="ticket_number_error" class="help-block"><font color="red">{{ticket_number_error_msg}}</font></span>
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': pointForm.percent.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Promoción</label>
+	                            <div class="col-lg-10">
+									<select class="form-control" ng-model="point.percent" id="percent" name="percent" ng-change="setPoints()"
+										placeholder="Porcentaje (%) de la Promoción">
+										  <option value="1">-</option>
+										  <option value="1.10">10%</option>
+										  <option value="1.15">15%</option>
+										  <option value="1.25">25%</option>
+										  <option value="1.5">50%</option>
+										  <option value="2">100%</option>
+									</select>								
+	                            </div>
+	                        </div>
+
+							<div class="form-group" ng-class="{ 'has-error': pointForm.points.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Puntos</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="point.points" 
+											type="text" class="form-control" 
+											id="points" name="points" value="{{point.quantity}}"
+											placeholder="" readonly style="background: white"/>
+	                            </div>
+	                        </div>							
+	       <!-- </div> -->
+
+	                        <div class="form-group">
+	                            <div class="col-lg-offset-2 col-lg-10">
+	                                <button type="submit" class="btn btn-primary" ng-disabled="pointForm.$pristine">
+	                                    Aceptar
+	                                </button>
+	                            </div>
+	                        </div>
+	                    </form>
+			</div>
+		</div>
+		<script type="text/javascript">
+            $(function () {
+				$("#datetimepicker1").datetimepicker({
+					format: 'DD/MM/YYYY'
+				}).on('dp.change', function(ev){
+
+				});				
+			});
+			
+			function setDatePicker(){
+				document.getElementById("credential_number").focus();
+				document.getElementById("buy_date").focus();
+				document.getElementById("buy_date").value = '';
+			}
+        </script>

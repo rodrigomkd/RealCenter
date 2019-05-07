@@ -1,0 +1,160 @@
+		<div class="container">
+			<br>
+			<br>
+			<br>
+				<div class="panel-heading">
+	                <h2 class="panel-title">Formulario - Cliente</h2>
+	            </div>
+				<form ng-submit="pushData(client)" class="form-horizontal" id="clientForm" name="clientForm" novalidate>
+	                        <div class="form-group" ng-class="{ 'has-error': clientForm.credential_number.$invalid && submitted }">
+	                            <label for="inputName" class="col-lg-2 control-label">No. Credencial</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.credential_number" 
+									type="text" class="form-control" 
+									id="credential_number" name="credential_number" 
+									placeholder="Ex. MRC00000001" required>									
+									<span ng-show="credential_number_error" class="help-block"><font color="red">{{credential_number_error_msg}}</font></span>                       
+								</div>							
+	                        </div>
+							
+	                        <div class="form-group" ng-class="{ 'has-error': clientForm.name.$invalid && submitted }">
+	                            <label for="inputName" class="col-lg-2 control-label">Nombre</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.name" 
+									type="text" class="form-control" 
+									id="name" name="name" 
+									placeholder="Nombre" required>
+									<span ng-show="name_error" class="help-block"><font color="red">El Nombre es requerido.</font></span>
+	                            </div>
+	                        </div>
+							
+	                        <div class="form-group" ng-class="{ 'has-error': clientForm.last_name.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Apellidos</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.last_name" 
+											type="text" class="form-control" 
+											id="last_name" name="last_name" 
+											placeholder="Apellidos" required />
+									<span ng-show="last_name_error" class="help-block"><font color="red">Los Apellidos son requeridos.</font></span>											
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': clientForm.email.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">E-mail</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.email" 
+											type="email" class="form-control" 
+											id="email" name="email" 
+											placeholder="example@email.com" required ng-pattern="emailFormat" />
+									<span ng-show="email_error" class="help-block"><font color="red">Ingresar un e-mail válido.</font></span>
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': clientForm.phone.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Teléfono</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.phone" 
+											type="text" class="form-control" 
+											id="phone" name="phone" 
+											placeholder="Teléfono" required />
+									<span ng-show="phone_error" class="help-block"><font color="red">El Teléfono es requerido.</font></span>
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" >
+	                            <label for="inputSubject" class="col-lg-2 control-label">Fecha de Nacimiento</label>
+	                            <div class="col-lg-10">
+									<div class='input-group date' id='datetimepicker1'>	
+										<input ng-model="birthdate" 
+											type="text" class="form-control" 							 
+											placeholder="DD/MM/AAAA" required id="birthdate" 
+											name="birthdate" editable="false" ng-bind="birthdate | birthdate: 'dd/MM/yyyy'" />
+											<span class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar" onclick="setDatePicker()"></span>
+									</div>
+									<span ng-show="birthdate_error" class="help-block"><font color="red">Ingresar una Fecha de Nacimiento válida, el Cliente debe ser mayor de 16 años.</font></span>
+								</span>									
+	                            </div>								
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': clientForm.register_date.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Fecha de Registro</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.register_date" 
+											type="text" class="form-control" 
+											id="register_date" name="register_date" 
+											placeholder="Fecha de Registro" readonly style="background: white;" />
+											<p ng-show="clientForm.register_date.$invalid && !clientForm.register_date.$pristine" class="help-block">Enter a valid email.</p>
+									
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': clientForm.colony.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Colonia</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.colony" 
+											type="text" class="form-control" 
+											id="colony" name="colony" 
+											placeholder="Colonia" required />
+									<span ng-show="colony_error" class="help-block"><font color="red">La Colonia es requerida.</font></span>
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': clientForm.zip.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Código Postal</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="client.zip" 
+											type="text" class="form-control" 
+											id="zip" name="zip" 
+											placeholder="Código Postal" required />
+									<span ng-show="zip_error" class="help-block"><font color="red">El Código Postal es requerido.</font></span>
+	                            </div>
+	                        </div>
+							
+							<div class="form-group" ng-class="{ 'has-error': clientForm.gender.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Sexo</label>
+	                            <div class="col-lg-10">
+									<select class="form-control" ng-model="client.gender" id="gender" name="gender">
+										  <option ng-selected="client.gender == 'H'">Hombre</option>
+										  <option ng-selected="client.gender == 'M'">Mujer</option>
+									</select>
+									<span ng-show="gender_error" class="help-block"><font color="red">Seleccionar un Sexo.</font></span>
+	                            </div>
+	                        </div>							
+
+	                        <div class="form-group">
+	                            <div class="col-lg-offset-2 col-lg-10">
+	                                <button type="submit" class="btn btn-primary" ng-disabled="clientForm.$pristine">
+	                                    Aceptar
+	                                </button>
+									
+									<a href="#/list-client-comments/{{clientid}}">
+									<button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="top" 
+									title="Ver Comentarios" tooltip="Ver Comentarios" ng-hide="clientid==0">Comentarios</button>
+									</a>
+									
+									<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="top" 
+									title="Reenviar Correo" tooltip="Reenviar Correo" ng-hide="clientid==0" ng-click="resendEmail()">Reenviar Correo</button>
+									
+									<button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="top" 
+									title="Validar Correo" tooltip="Validar Correo" ng-hide="clientid==0" ng-click="validateEmail()">Validar Correo</button>
+	                            </div>
+	                        </div>
+	                    </form>
+			</div>
+		</div>
+		<script type="text/javascript">
+            $(function () {		
+				$("#datetimepicker1").datetimepicker({
+					format: 'DD/MM/YYYY'
+				}).on('dp.change', function(ev){
+
+				});				
+			});
+			
+			function setDatePicker(){
+				document.getElementById("name").focus();
+				document.getElementById("birthdate").focus();
+				document.getElementById("birthdate").value = '';
+			}
+        </script>
