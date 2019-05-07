@@ -1,0 +1,162 @@
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel='stylesheet' type='text/css'>
+<link href="http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css" rel='stylesheet' type='text/css'>
+
+<style>
+.sortable {
+    cursor: pointer;
+}
+</style>
+<script>
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip();
+	});
+</script>
+<br>
+<br>
+<br>
+<div class="col-md-12">
+	<div class="panel panel-default panel-table">		
+		<div class="panel-heading">
+			<div class="row">
+			</div>
+			<div class="form-inline">
+				<div class="form-group">
+                    <a href="intranet/#/client/0"><button type="button" class="btn btn-sm btn-primary btn-create">Registrar Cliente</button></a>
+					<button class="btn  btn-xs btn-success" ng-click="exportData()">Export (.csv)</button>
+				</div>
+				<br>
+				<br>
+                <div class="form-group">
+                    <label class="" for="Search">Buscar: </label>
+                    <input type="text" name="search" class="form-control" title="Search" 
+                        id="search" ng-model="searchText" style="height: 30px; width: 210px;" placeholder="Buscar en cualquier columna..." />
+				</div>
+				&nbsp;
+				<div class="form-group">
+                    <div class="form-group pull-right">
+                    <label class="" for="PageSize">Tam. Pág.</label>
+                    <select class="form-control" name="pageSize" ng-change="setPageSize()" ng-model="pageSize" style="height: 30px;" >
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+						<option value="20">20</option>
+						<option value="100">100</option>
+						<option value="400">400</option>
+                    </select>
+					</div>
+				</div>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<div class="form-group">
+                    <label class="" for="Search">Fecha Inicial: </label>
+                    <input type="text" name="search" class="form-control" title="Search" 
+                        id="search" ng-model="initial_date" style="height: 30px;" placeholder="dd/mm/aaaa" />
+					&nbsp;
+					<label class="" for="Search">Fecha Final: </label>
+                    <input type="text" name="search" class="form-control" title="Search" 
+                        id="search" ng-model="final_date" style="height: 30px;" placeholder="dd/mm/aaaa" />
+					<button class="btn  btn-xs btn-info" ng-click="filterDates()">Filtrar Fechas</button>
+					<button class="btn  btn-xs btn-warning" ng-click="clearFilter()">Limpiar</button>
+				</div>
+				<br>
+				<br>
+				<div class="form-group">
+                    <div class="form-group pull-right">
+                    <label class="" for="PageSize">Buscar por: </label>
+                    <select class="form-control" name="pageSize" ng-model="filterBy" style="height: 30px;" >
+                        <option value="credential_number">No. Credencial</option>
+                        <option value="name" selected>Nombre(s)</option>
+                        <option value="last_name">Apellidos</option>
+                    </select>
+					&nbsp;
+					<input type="text" name="search" class="form-control" title="Search" 
+                        id="search" ng-model="filterByText" style="height: 30px; width: 200px;" 
+						placeholder="Ingresar valor a buscar..." />
+					&nbsp;
+					<button class="btn  btn-xs btn-info" ng-click="searchByColumn()">Buscar</button>
+					<button class="btn  btn-xs btn-warning" ng-click="clearSearchByColumn()">Limpiar</button>
+					</div>				
+				</div>
+		</div>
+	</div>
+	
+        <div class="panel-body">                      
+            <table class="table table-striped table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th class="id" custom-sort order="'id'" sort="sort" style="cursor: pointer;">#&nbsp;</th>
+						<th class="credential_number" custom-sort order="'credential_number'" sort="sort" style="cursor: pointer;">No. Credencial&nbsp;</th>
+                        <th class="name" custom-sort order="'name'" sort="sort" style="cursor: pointer;">Nombre(s)&nbsp;</th>
+                        <th class="name" custom-sort order="'last_name'" sort="sort" style="cursor: pointer;">Apellidos&nbsp;</th>
+						<th class="email" custom-sort order="'email'" sort="sort" style="cursor: pointer;">E-mail&nbsp;</th>
+                        <th class="phone" custom-sort order="'phone'" sort="sort" style="cursor: pointer;">Celular&nbsp;</th>
+                        <th class="birthdate" custom-sort order="'birthdate'" sort="sort" style="cursor: pointer;" tooltip="Fecha de Nacimiento">Fecha Nac.&nbsp;</th>
+                        <th class="register_date" custom-sort order="'register_date'" sort="sort" style="cursor: pointer;">Fecha Reg.&nbsp;</th>
+						<th class="colony" custom-sort order="'colony'" sort="sort" style="cursor: pointer;">Colonia&nbsp;</th>
+						<th class="zip" custom-sort order="'zip'" sort="sort" style="cursor: pointer;">Código Postal&nbsp;</th>
+						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Sexo&nbsp;</th>
+						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Verificación&nbsp;</th>
+						<th class="gender" custom-sort order="'gender'" sort="sort" style="cursor: pointer;">Usuario&nbsp;</th>						
+						<th class="opciones" custom-sort>Opciones</th>
+					</tr>
+                </thead>
+				<tbody>
+                    <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse | filter:searchText as results">
+                        <td>{{$index + 1}}</td>
+                        <td>{{item.credential_number}}</td>
+                        <td>{{item.name}}
+						<td>{{item.last_name}}</td>
+                        <td>{{item.email}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.birthdate}}</td>
+						<td>{{item.register_date}}</td>
+						<td>{{item.colony}}</td>
+						<td>{{item.zip}}</td>
+						<td>{{item.gender}}</td>
+						<td>{{item.verification_date}}</td>
+						<td>{{item.user}}</td>
+
+						<td align="center">
+							<a href="#/client/{{item.clientid}}"><button class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="top" title="Editar Cliente" tooltip="iuoi"><span class="glyphicon glyphicon-pencil"></span></button></a>
+							<button class="btn btn-danger btn-xs" ng-click="deleteClient(item)" data-toggle="tooltip" data-placement="top" title="Editar Cliente"><span class="glyphicon glyphicon-trash"></span></button>
+						</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <td colspan="6">
+                        <div class="pagination pull-right">
+                             <ul>
+                                <li ng-class="{disabled: currentPage == 0}">
+                                    <a href ng-click="prevPage()">« Anterior</a>
+                                </li>
+								<!--
+                                <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+                                    ng-class="{active: n == currentPage}" ng-click="setPage()">
+                                    <a href ng-bind="n + 1">1</a>
+                                </li>
+								-->
+								
+								
+								<li ng-class="">
+                                    <a href>{{ (currentPage) + (1) }} de {{gap}}</a>
+                                </li>
+								
+								<li ng-class=""><!--{disabled: (currentPage) == pagedItems.length - 1}">-->                              								
+									<a href>
+										<select style="width: 60px;" ng-model="currentPage" ng-change="setPageSelect()">
+											<option ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap)" 
+											>{{$index + 1}}</option> <!--value="{{$index + 1}}" ng-selected="n == currentPage"-->
+										</select>
+									</a>			
+                                </li>
+								
+                                <li ng-class="{disabled: (currentPage) == pagedItems.length - 1}">
+                                    <a href ng-click="nextPage()">Siguiente »</a>
+                                </li>																							
+                            </ul>							
+                        </div>
+                    </td>
+                </tfoot>                
+            </table>
+        </div>
+</div>
+</div>

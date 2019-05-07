@@ -1,0 +1,40 @@
+		<div class="container">
+			<br>
+			<br>
+			<br>
+				<div class="panel-heading">
+	                <h2 class="panel-title">Formulario - Comentarios</h2>
+	            </div>
+				<form ng-submit="save(c)" class="form-horizontal" id="categoryForm" name="categoryForm" novalidate>							
+	                        <div class="form-group" ng-class="{ 'has-error': categoryForm.name.$invalid && submitted }">
+	                            <label for="inputName" class="col-lg-2 control-label">Fecha</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="c.comments_date"
+									type="text" class="form-control" 
+									id="name" name="name" 
+									placeholder="Fecha" readonly style="background-color: white;">
+									<span ng-show="commerce_name_error" class="help-block"><font color="red">El nombre del Local es requerido.</font></span>
+	                            </div>
+	                        </div>
+							
+	                        <div class="form-group" ng-class="{ 'has-error': categoryForm.limit.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Comentario</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="c.description" 
+											type="text" class="form-control" 
+											id="limit" name="limit" 
+											placeholder="Comentario" required />
+									<span ng-show="description_error" class="help-block"><font color="red">El Comentario es requerido.</font></span>											
+	                            </div>
+	                        </div>
+
+	                        <div class="form-group">
+	                            <div class="col-lg-offset-2 col-lg-10">
+	                                <button type="submit" class="btn btn-primary" ng-disabled="categoryForm.$pristine">
+	                                    Aceptar
+	                                </button>
+	                            </div>
+	                        </div>
+	                    </form>
+			</div>
+		</div>

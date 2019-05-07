@@ -1,0 +1,95 @@
+
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel='stylesheet' type='text/css'>
+<link href="http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css" rel='stylesheet' type='text/css'>
+
+<style>
+.sortable {
+    cursor: pointer;
+}
+</style>
+<br>
+<br>
+<br>
+<div class="col-md-12">
+	<div class="panel panel-default panel-table">		
+		<div class="panel-heading">
+			<div class="row">
+			</div>
+			<div class="form-inline">
+				<div class="form-group">
+                    <a href="#/view-commerce/0"><button type="button" class="btn btn-sm btn-primary btn-create">Registrar Local</button></a>
+				</div>
+				<br>
+				<br>
+                <div class="form-group">
+                    <label class="" for="Search">Buscar: </label>
+                    <input type="text" name="search" class="form-control" title="Search" 
+                        id="search" ng-model="searchText" style="height: 30px; width: 220px;" placeholder="Buscar en cualquier columna..."/>
+				</div>
+				<div class="form-group">
+                    <div class="form-group pull-right">
+                    <label class="" for="PageSize">Tam. Pág.</label>
+                    <select class="form-control" name="pageSize" ng-change="setPageSize()" ng-model="pageSize">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+						<option value="20">20</option>
+						<option value="100">100</option>
+                    </select>
+					</div>
+				</div>
+		</div>
+	</div>
+	
+        <div class="panel-body">                      
+            <table class="table table-striped table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th class="id" custom-sort order="'id'" sort="sort" style="cursor: pointer;">#&nbsp;</th>
+						<th class="credential_number" custom-sort order="'credential_number'" sort="sort" style="cursor: pointer;">Categoría&nbsp;</th>
+                        <th class="name" custom-sort order="'buy_date'" sort="sort" style="cursor: pointer;">Local&nbsp;</th>
+                        <th class="email" custom-sort order="'register_date'" sort="sort" style="cursor: pointer;">Número&nbsp;</th>
+						<th class="email" custom-sort order="'register_date'" sort="sort" style="cursor: pointer;">Activo&nbsp;</th>		
+						<th class="opciones" custom-sort>Opciones</th>
+					</tr>
+                </thead>
+				<tbody>
+                    <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse | filter:searchText as results">
+                        <td>{{$index + 1}}</td>
+                        <td>{{item.category}}</td>
+                        <td>{{item.commerce_name}}</td>
+                        <td>{{item.commerce_number}}</td>
+						<td><input type="checkbox" class="" value="{{item.active}}" ng-checked="item.active == 'SI'" 			
+							id="active" name="active" readonly onclick="javascript: return false;" />
+						</td>
+						<td align="center">
+							<a href="#/view-commerce/{{item.commerceid}}"><button class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="top" title="Editar Local" tooltip="iuoi"><span class="glyphicon glyphicon-pencil"></span></button></a>
+							<button class="btn btn-danger btn-xs" ng-click="deleteCommerce(item)" data-toggle="tooltip" data-placement="top" title="Eliminar Local"><span class="glyphicon glyphicon-trash"></span></button>
+						</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <td colspan="6">
+                        <div class="pagination pull-right">
+                             <ul>
+                                <li ng-class="{disabled: currentPage == 0}">
+                                    <a href ng-click="prevPage()">« Anterior</a>
+                                </li>
+                            
+                                <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+                                    ng-class="{active: n == currentPage}"
+                                ng-click="setPage()">
+                                    <a href ng-bind="n + 1">1</a>
+                                </li>
+                             
+                                <li ng-class="{disabled: (currentPage) == pagedItems.length - 1}">
+                                    <a href ng-click="nextPage()">Siguiente »</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tfoot>                
+            </table>
+        </div>
+</div>
+</div>

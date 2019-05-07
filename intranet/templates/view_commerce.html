@@ -1,0 +1,72 @@
+		<div class="container">
+			<br>
+			<br>
+			<br>
+				<div class="panel-heading">
+	                <h2 class="panel-title">Formulario - Local</h2>
+	            </div>
+				<form ng-submit="save(c)" class="form-horizontal" id="categoryForm" name="categoryForm" novalidate>
+	                        <div class="form-group" ng-class="{ 'has-error': categoryForm.commerce.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Categoría</label>
+	                            <div class="col-lg-10">
+									<select class="form-control" ng-model="c.category" id="commerce" name="commerce">
+										  <option ng-repeat="cat in categories" value="{{cat}}" ng-selected="c.commercetypeid == cat.commercetypeid">{{cat.description}}</option>
+									</select>
+									<span ng-show="category_error" class="help-block"><font color="red">Seleccionar una Categoría.</font></span>
+	                            </div>
+	                        </div>
+							
+	                        <div class="form-group" ng-class="{ 'has-error': categoryForm.name.$invalid && submitted }">
+	                            <label for="inputName" class="col-lg-2 control-label">Nombre Local</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="c.commerce_name" 
+									type="text" class="form-control" 
+									id="name" name="name" 
+									placeholder="Nombre del Local" required>
+									<span ng-show="commerce_name_error" class="help-block"><font color="red">El nombre del Local es requerido.</font></span>
+	                            </div>
+	                        </div>
+							
+	                        <div class="form-group" ng-class="{ 'has-error': categoryForm.limit.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">No. Local</label>
+	                            <div class="col-lg-10">
+	                                <input ng-model="c.commerce_number" 
+											type="text" class="form-control" 
+											id="limit" name="limit" 
+											placeholder="Número del Local" required />
+									<span ng-show="commerce_number_error" class="help-block"><font color="red">El Número del local es requerido.</font></span>											
+	                            </div>
+	                        </div>
+							<!--
+							<div class="form-group" ng-class="{ 'has-error': categoryForm.gender.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Activo</label>
+	                            <div class="col-lg-10">
+									<select class="form-control" ng-model="c.active" id="gender" name="gender">
+										  <option ng-selected="c.active=='1'" value="1">SI</option>
+										  <option ng-selected="c.active=='0'" value="0">NO</option>
+									</select>
+									<span ng-show="rol_error" class="help-block"><font color="red">Seleccionar una opción...</font></span>
+	                            </div>
+	                        </div>
+							-->
+							<div class="form-group" ng-class="{ 'has-error': categoryForm.active.$invalid && submitted }">
+	                            <label for="inputSubject" class="col-lg-2 control-label">Activo</label>
+	                            <div class="col-lg-10">
+									<input type="checkbox" class="form-control" ng-model="isActive" 			
+										style="width: 2%; vertical-align: 'center';" id="active" name="active"
+										
+										/>
+										<!-- ng-true-value="1" ng-false-value="0" parse-int ng-checked="c.active=='1'" -->
+	                            </div>
+	                        </div>
+
+	                        <div class="form-group">
+	                            <div class="col-lg-offset-2 col-lg-10">
+	                                <button type="submit" class="btn btn-primary" ng-disabled="categoryForm.$pristine">
+	                                    Aceptar
+	                                </button>
+	                            </div>
+	                        </div>
+	                    </form>
+			</div>
+		</div>

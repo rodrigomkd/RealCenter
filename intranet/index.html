@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html ng-app="starter">
+  <head>
+    <title>Real Center</title>
+	<meta charset="utf-8">
+	
+	<!-- AngularJS -->
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+	<script src="templates/js/bootstrap-datetimepicker.min.js"></script>
+	
+	<!-- datepicker -->
+	<link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" >
+	<link href="templates/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css">
+	<link rel="icon" href="http://tarjeta.realcenter.com.mx/intranet/templates/css/img/icon.ico">
+	
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/services.js"></script>
+	<base href="/intranet">
+	
+	<!--ngcsv CDN fro CSV-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.js"></script>
+ 
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('dropdown-toggle').dropdown()
+	});
+	</script>
+  </head>
+
+<body ng-controller="HomeController">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Real Center</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav" ng-if="location.path() !== '/login' && location.path() !== '/request-password' && location.path() !== '/notfound' && location !== '/register-user'">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" ng-if="location.path() !== '/login' && location.path() !== '/request-password' && location.path() !== '/notfound'" 
+					data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clientes <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#/client/0">Registrar Cliente</a></li>
+                  <li><a href="#/list-clients">Lista de Clientes</a></li>
+				  <li><a href="#/list-clients-verification/1">Clientes E-mail Verificados</a></li>
+                </ul>
+			</li>
+            <li class="dropdown" ng-if="location !== '/register-user'">
+                <a href="#" class="dropdown-toggle" 
+					data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Puntos <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#/points-register">Registrar Puntos</a></li>
+                  <li><a href="#/list-points">Lista de Puntos</a></li>
+				  <li><a href="#/list-points-commerce">Reporte - Puntos Negocio</a></li>
+				  <li><a href="#/list-points-credential">Reporte - Puntos Credencial</a></li>
+                </ul>
+			</li>
+            <li class="dropdown" ng-if="role === 'A'">
+                <a href="#" class="dropdown-toggle"  
+					data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Parámetros <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+					<li><a href="#/view-category/0">Registrar Categoría</a></li>
+					<li><a href="#/list-categories">Lista de Categorías</a></li>                 
+					<li><a href="#/view-commerce/0">Registrar Local</a></li>
+					<li><a href="#/list-commerces">Lista de Locales</a></li>
+                </ul>
+			</li>
+			<li class="dropdown" ng-if="role === 'A'">
+                <a href="#" class="dropdown-toggle" 
+					data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Usuarios <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#/view-user/0">Registrar Usuario</a></li>
+                  <li><a href="#/list-users">Lista de Usuarios</a></li>
+                </ul>
+			</li>
+			<li class="dropdown" ng-if="role === 'A'">
+                <a href="#" class="dropdown-toggle" 
+					data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reportes <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#/report-card-points">Reporte T. Entregadas VS Registran Puntos</a></li>
+                  <li><a href="#/report-card-points-acum">Reporte T. Entregadas VS R. Puntos Acumulado</a></li>
+				  <li><a href="#/report-client-points">Reporte Puntos Clientes</a></li>
+                </ul>
+			</li>
+			<li class="dropdown" ng-if="role === 'R'">
+                <a href="#" class="dropdown-toggle" 
+					data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reportes <span class="caret"></span></a>
+                <ul class="dropdown-menu">                 
+				  <li><a href="#/report-client-points">Reporte Puntos Clientes</a></li>
+                </ul>
+			</li>
+          </ul>
+		  <ul class="nav navbar-nav navbar-right" ng-if="location.path() !== '/login' && location.path() !== '/request-password' && location.path() !== '/notfound' && location !== '/register-user'">
+              <li class="dropdown" ng-hide="URL == '/rcenterpoint#/login'">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Acciones <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+				  <li><a href="#/view-config-email" ng-if="role === 'A'">Cambiar Envío E-mail</a></li>
+				  <li><a href="#/change-password">Cambiar Contraseña</a></li>
+                  <li><a href="" ng-click="logout()">Cerrar Sesión</a></li>
+           </ul>
+        </div>
+      </div>
+    </nav>
+	<main ng-view></main>
+	</body>
+</html>
