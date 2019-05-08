@@ -1,8 +1,8 @@
 <?php
-	define("__HOST__", "199.79.63.142");
-	define("__USER__", "gvvcobez_rodrigo");
-	define("__PASS__", "Rodrigo.1");
-	define("__BASE__", "gvvcobez_real_center");
+	define("__HOST__", "localhost");
+	define("__USER__", "rea1908403561174");
+	define("__PASS__", "k0G%Gp7160LWC");
+	define("__BASE__", "rea1908403561174");
 	
 	class CRON {
 		private $con = false;
@@ -17,7 +17,7 @@
 				die("DB connection failed:" . mysqli_connect_error());
 			}
 
-			//$this->execute();
+			$this->execute();
 		}
 		
 		public function execute() {

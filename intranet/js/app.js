@@ -103,6 +103,9 @@ realCenterApp.config(['$routeProvider', '$locationProvider' , function($routePro
 		}).when('/report-client-register',{
 			templateUrl: 'intranet/templates/report_client_register.html',
 			controller: 'ReportClientRegisterCtrl'
+		}).when('/report-client-points-details/:clientId',{
+			templateUrl: 'intranet/templates/report_client_points_details.html',
+			controller: 'ReportClientPointsDetailsCtrl'
 		
 		//CONFIG
 		}).when('/view-config-email',{

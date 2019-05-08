@@ -1,8 +1,8 @@
 <?php
-	define("__HOST__", "192.254.234.193");
-	define("__USER__", "adrianf_rcenter");
-	define("__PASS__", "irH?APae3K,b");
-	define("__BASE__", "adrianf_RealCenter_Tarjeta");
+	define("__HOST__", "localhost");
+	define("__USER__", "rea1908403561174");
+	define("__PASS__", "k0G%Gp7160LWC");
+	define("__BASE__", "rea1908403561174");
 	
 	class DB {
 		private $con = false;
@@ -16,19 +16,7 @@
 				die("DB connection failed:" . mysqli_connect_error());
 			}
 		}
-		
-		public function getClients() {
-			$sql = "SELECT * FROM `client` ORDER BY `name` ASC";
-			$qry = $this->con->query($sql);
-			if($qry->num_rows > 0) {
-				while($row = $qry->fetch_object()) {
-					$this->data[] = $row;
-				}
-			} else {
-				$this->data[] = null;
-			}
-			$this->con->close();
-		}
+
 		public function qryFire($sql=null) {
 			echo $sql;
 			if($sql == null) {
@@ -37,9 +25,7 @@
 				$this->con->query($sql);
 				$this->qryPop();	
 			}
-			//$this->con->close();
 			return $this->data;
-			//return $last_id = $conn->insert_id;
 		}
 		
 		public function qryPop() {
@@ -47,8 +33,6 @@
 			$qry = $this->con->query($sql);
 			if($qry->num_rows > 0) {
 				while($row = $qry->fetch_object()) {
-					//echo "$row->credential_number";
-					//echo "$row->last_name";
 					$this->data[] = $row;
 				}
 			} else {
@@ -76,40 +60,5 @@
 			return $this->data;
 		}
 		
-		public function prueba(){
- $query = "SELECT * FROM commerce";
- $sql = $this->conex->query($query); //Se ejecuta directo la consulta, ya que no hay parámetros
- $sql->setFetchMode(PDO::FETCH_ASSOC);
- $movs = array(); //array auxiliar para guardar los movimientos
- while ($row = $sql->fetch()) { //recomerremos una a una las filas obtenidas
-    array_push($movs, $row); //guardamos el elemento en el array auxiliar
-    unset($row); //eliminamos la fila para evitar sobrecargar la memoria
- }
-    return $movs;
- }
- 
-		public function qryCommerces($sql=null) {
-			echo $sql;
-			if($sql == null) {
-				$this->qryPopCommerces();
-			} else {
-				$this->con->query($sql);
-				$this->qryPopCommerces();	
-			}
-			return $this->data;
-		}
-		
-		public function qryPopCommerces() {
-			$sql = "SELECT `commerceid`, c.commercetypeid, ct.description as category, `commerce_name`, `commerce_number`, ct.limited, `percent` FROM commerce c left outer join commerce_type ct on c.commercetypeid = ct.commercetypeid order by c.commerce_name";
-			$qry = $this->con->query($sql);
-			if($qry->num_rows > 0) {
-				while($row = $qry->fetch_object()) {
-					$this->data[] = $row;
-				}
-			} else {
-				$this->data[] = null;
-			}
-			$this->con->close();
-		}
 	}
 ?>

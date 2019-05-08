@@ -3293,8 +3293,6 @@ realCenterApp.controller('ReportClientPointsDetailsCtrl', function($scope, RCSer
     $scope.itemsPerPage = 10;
     $scope.pagedItems = [];
     $scope.currentPage = 0;
-
-    $scope.test = "red";
 	
 	RCService.getPointsByClientId($routeParams.clientId).then(function(result){
 		$scope.items = result;
