@@ -1,6 +1,6 @@
 RCenterPointApp.factory('RCService', function($http) {
   var service = {};
-  var url = "http://tarjeta.realcenter.com.mx/intranet/js/";
+  var url = "https://tarjeta.realcenter.com.mx/intranet/js/";
 	
 	service.getClient = function(clientid){		
 		return $http.post(url + "getClient.php", {"clientid" : clientid})

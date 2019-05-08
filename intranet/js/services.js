@@ -1,6 +1,6 @@
 realCenterApp.factory('RCService', function($http) {
   var service = {};
-  var url = "http://nomada.com.mx/apps/realcenter/intranet/js/";
+  var url = "https://tarjeta.realcenter.com.mx/intranet/js/";
 	var role = "";
 	
 	function getDate(date){
