@@ -27,13 +27,28 @@
 			$current_date = date("Y-m-d");
 			echo "Current Date: " . $current_date;
 
+			//insert new clients
+			$sql_clients = "SELECT clientid, register_date FROM client WHERE register_date = '" . $current_date . "'";
+			$new_clients = $this->qryData($sql_clients);
+
+			if(count($new_clients) > 0) {
+				foreach($new_clients as $row => $val) {
+					$sql_clients2 = "INSERT INTO verification_points (clientid, start_date, next_date) values (" . $val->clientid . ", '" . $current_date . "', DATE_ADD('" . $current_date . "', INTERVAL 1 YEAR))";				
+					$this->qryFire($sql_clients2);
+				}
+			}
+
+			//Limit points
 			$sql = "SELECT verificationid, clientid, start_date, next_date, points FROM verification_points WHERE next_date = '" . $current_date . "'";
 			$clients = $this->qryData($sql);
 
 			if(count($clients) > 0) {
 				foreach($clients as $row => $val) {
-					$sql = "SELECT SUM(points) as points FROM points WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->start_date ."' AND '" . $val->next_date . "'";
-					$points = $this->qryRow($sql);
+					if(isset($val->clientid)){
+						continue;
+					}
+					$sql2 = "SELECT SUM(points) as points FROM points WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->start_date ."' AND '" . $val->next_date . "'";
+					$points = $this->qryRow($sql2);
 
 					$setpoints = 0;
 					if($points->points != null) {
@@ -41,16 +56,17 @@
 					}
 					
 					//update values
-					$sql = "UPDATE verification_points SET points = " . $setpoints . " WHERE verificationid = " . $val->verificationid;
-					$this->qryFire($sql);
+					$sql3 = "UPDATE verification_points SET points = " . $setpoints . " WHERE verificationid = " . $val->verificationid;
+					$this->qryFire($sql3);
 
 					//insert new record
-					$sql = "INSERT INTO verification_points (clientid, start_date, next_date) values (" . $val->clientid . ", '" . $val->next_date . "', DATE_ADD('" . $val->next_date. "', INTERVAL 1 YEAR))";
-					$this->qryFire($sql);
+					$sql4 = "INSERT INTO verification_points (clientid, start_date, next_date) values (" . $val->clientid . ", '" . $val->next_date . "', DATE_ADD('" . $val->next_date. "', INTERVAL 1 YEAR))";
+					echo "id: " . $val->clientid;
+					$this->qryFire($sql4);
 					
 					if($setpoints < $this->points_per_year){
-						$sql = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->start_date ."' AND '" . $val->next_date . "'";
-						$this->qryFire($sql);
+						$sql5 = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->start_date ."' AND '" . $val->next_date . "'";
+						$this->qryFire($sql5);
 					}
 				}
 			} 

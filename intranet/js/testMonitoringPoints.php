@@ -6,6 +6,6 @@
 ?>
 <?php	
 	$data = json_decode(file_get_contents("php://input"));
-	include('../../scripts/verificationPointsScript.php');
+	include('../../scripts/monitoringPointsCron.php');
 	$db = new CRON();
 ?>

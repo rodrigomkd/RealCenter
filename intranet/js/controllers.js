@@ -307,13 +307,14 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 						alert("Se guardó el nuevo Cliente correctamente.");
 						$location.path("/list-clients");
 
-						//save verification points
+						//save verification points, this should be with the CRON
+						/*
 						RCService.getClientByCredential(client.credential_number.trim()).then(function(result_client){
                         	RCService.saveVerificationPoints(result_client.clientid, $scope.client.register_date).then(function(result_verification){
 
                             });
                         });
-						
+						*/
 						RCService.sendEmail("Verificación de Cuenta","Hola "+client.name+", para validar tu cuenta en Real Center "+
 							"debes ingresar al siguiente enlace y crear una nueva contraseña: " + url_users + "#/register/" 
 							+ referenceid, client.email).then(function(result3){ 																
@@ -1488,6 +1489,8 @@ realCenterApp.controller('PointsListCredentialsCtrl', function($scope, $http, $l
 	$scope.clearFilter = function(){
 		$scope.initial_date = "";
 		$scope.final_date = "";
+		$scope.start_date = "";
+	    $scope.end_date = "";
 		
 		RCService.getPointsCredentials().then(function(result){
 			$scope.items = result;
@@ -1825,6 +1828,20 @@ realCenterApp.controller('PointsListCredentialsDetailsCtrl', function($scope, $h
             $log.error(data);
 		})
 	};
+
+	$scope.clearFilter = function() {
+		$scope.initial_date = "";
+		$scope.final_date = "";
+		
+		$http.post(url + 'getPointsCredentialsDetailsDates.php', { 'clientid' : clientid })
+        .success(function(data) {
+			$scope.items = data;
+			$scope.setPageSize();
+        })
+        .error(function(data,status,headers,config) {
+            $log.error(data);
+		})
+	};
 });
 
 realCenterApp.controller('PointsListCredentialsDetailsCommerceCtrl', function($scope, $http, $log, $routeParams, $filter, $location, RCService) {
@@ -2023,6 +2040,20 @@ realCenterApp.controller('PointsListCredentialsDetailsCommerceCtrl', function($s
 	   $scope.end_date = final_date;
 	   $http.post(url + 'getPointsCredentialsDetailsCommerceDates.php', { 'clientid' : clientid, 'commerceid' : commerceid, 
 			"initial_date" : $scope.initial_date, "final_date" : $scope.final_date })
+        .success(function(data) {
+			$scope.items = data;
+			$scope.setPageSize();
+        })
+        .error(function(data,status,headers,config) {
+            $log.error(data);
+		})
+	};
+
+	$scope.clearFilter = function() {
+		$scope.initial_date = "";
+		$scope.final_date = "";
+		
+		$http.post(url + 'getPointsCredentialsDetailsCommerce.php', { 'clientid' : clientid, 'commerceid' : commerceid })
         .success(function(data) {
 			$scope.items = data;
 			$scope.setPageSize();
