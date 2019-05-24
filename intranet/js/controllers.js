@@ -1,6 +1,6 @@
-var url = "http://tarjeta.realcenter.com.mx/intranet/js/";
-var url_app = "http://tarjeta.realcenter.com.mx/intranet/";
-var url_users = "http://tarjeta.realcenter.com.mx/";
+var url = "https://tarjeta.realcenter.com.mx/intranet/js/";
+var url_app = "https://tarjeta.realcenter.com.mx/intranet/";
+var url_users = "https://tarjeta.realcenter.com.mx/";
 var limit_points = 5000;
 var age_validation = 16;
 
