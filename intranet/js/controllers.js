@@ -1,6 +1,6 @@
-var url = "https://tarjeta.realcenter.com.mx/intranet/js/";
-var url_app = "https://tarjeta.realcenter.com.mx/intranet/";
-var url_users = "https://tarjeta.realcenter.com.mx/";
+var url = "http://tarjeta.realcenter.com.mx/intranet/js/";
+var url_app = "http://tarjeta.realcenter.com.mx/intranet/";
+var url_users = "http://tarjeta.realcenter.com.mx/";
 var limit_points = 5000;
 var age_validation = 16;
 
@@ -295,10 +295,9 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 	   client.colony = client.colony.toUpperCase();
 
 	   if($scope.clientid == 0){		   
-		   RCService.getClientByCredential(client.credential_number.trim()).then(function(result_credential){				
+		   RCService.getClientByCredential(client.credential_number.trim()).then(function(result_credential){
 				if(typeof result_credential.credential_number === "undefined"){				 
 				   var referenceid = Date.now();
-				   //save client
 					$http.post(url + 'pushData.php', { 'credential_number' : client.credential_number, 
 					'name': client.name, 'last_name': client.last_name, 'email': client.email, 
 					'phone': client.phone, 'birthdate': client.birthdate, 'register_date': $scope.client.register_date,
@@ -307,14 +306,14 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 					.success(function(data) {	
 						alert("Se guardó el nuevo Cliente correctamente.");
 						$location.path("/list-clients");
-						
+
 						//save verification points
 						RCService.getClientByCredential(client.credential_number.trim()).then(function(result_client){
-							RCService.saveVerificationPoints(result_client.clientid, $scope.client.register_date).then(function(result_verification){
+                        	RCService.saveVerificationPoints(result_client.clientid, $scope.client.register_date).then(function(result_verification){
 
-							});
-						});
-
+                            });
+                        });
+						
 						RCService.sendEmail("Verificación de Cuenta","Hola "+client.name+", para validar tu cuenta en Real Center "+
 							"debes ingresar al siguiente enlace y crear una nueva contraseña: " + url_users + "#/register/" 
 							+ referenceid, client.email).then(function(result3){ 																
@@ -323,7 +322,7 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 					.error(function(err) {
 						alert("ERROR: Ocurrió un error al guardar el Cliente.");
 						$log.error(err);
-					})	
+					})
 			   }else{
 				   $scope.credential_number_error = true;
 				   $scope.credential_number_error_msg = "No. de Credencial no disponible, favor de ingresar otra Credencial.";
@@ -680,6 +679,136 @@ realCenterApp.controller('PointsCtrl', function($scope, $filter, $http, RCServic
             $log.error(data);
 		})
 	};
+});
+
+realCenterApp.controller('ReportClientPointsDetailsCtrl', function($scope, RCService, $filter, $routeParams) {
+	$scope.name = "";
+	$scope.points = "";
+	$scope.isLogin = false;
+	
+	$scope.items = {};
+	$scope.noValidPoints = {};
+	$scope.search = "";
+	$scope.pageSize = "10";
+	//variables to table pagination 
+	$scope.gap = 5;    
+    $scope.filteredItems = [];
+    $scope.groupedItems = [];
+    $scope.itemsPerPage = 10;
+    $scope.pagedItems = [];
+    $scope.currentPage = 0;
+	
+	RCService.getPointsByClientId($routeParams.clientId).then(function(result){
+		$scope.items = result;
+		$scope.setPageSize();
+	});
+
+	RCService.getClient($routeParams.clientId).then(function(result){
+		$scope.name = result.name;
+	});
+	
+	RCService.getPointsByClient($routeParams.clientId).then(function(result){
+		if(result.total_points == null){
+			$scope.points = 0;
+		}else{
+			$scope.points = result.total_points;
+		}		
+	});
+
+	RCService.getVerificationPointsById($routeParams.clientId).then(function(result){
+		if(result[0] == null){
+			$scope.noValidPoints = {};
+		}else{
+			$scope.noValidPoints = result;
+		}	
+	});
+	
+	$scope.setPageSize = function () {
+	   $scope.itemsPerPage = $scope.pageSize;
+	   var decimalGap = $scope.items.length / $scope.itemsPerPage;
+	   var roundGap = Math.round($scope.items.length / $scope.itemsPerPage);
+	   if(roundGap < decimalGap){
+		   roundGap++;
+	   }
+	   
+	   $scope.gap = roundGap;
+	   $scope.search();
+	};
+    // init
+    $scope.sort = {       
+                sortingOrder : 'id',
+                reverse : false
+            };
+				
+    var searchMatch = function (haystack, needle) {
+        if (!needle) {
+            return true;
+        }
+        return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
+    };
+
+    // init the filtered items
+    $scope.search = function () {
+        $scope.filteredItems = $filter('filter')($scope.items, function (item) {
+            for(var attr in item) {
+				//alert(attr);
+                if (searchMatch(item[attr], $scope.query))
+                    return true;
+            }
+            return false;
+        });
+        // take care of the sorting order
+        if ($scope.sort.sortingOrder !== '') {
+            $scope.filteredItems = $filter('orderBy')($scope.filteredItems, $scope.sort.sortingOrder, $scope.sort.reverse);
+        }
+        $scope.currentPage = 0;
+        // now group by pages
+        $scope.groupToPages();
+    };
+    
+    // calculate page in place
+    $scope.groupToPages = function () {
+        $scope.pagedItems = [];
+        
+        for (var i = 0; i < $scope.filteredItems.length; i++) {
+            if (i % $scope.itemsPerPage === 0) {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+            } else {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+            }
+        }
+    };
+    
+    $scope.range = function (size,start, end) {
+        var ret = [];        
+        console.log(size,start, end);
+                      
+        if (size < end) {
+            end = size;
+            start = size-$scope.gap;
+        }
+        for (var i = start; i < end; i++) {
+            ret.push(i);
+        }        
+         console.log(ret);        
+        return ret;
+    };
+    
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+        }
+    };
+    
+    $scope.nextPage = function () {
+        if ($scope.currentPage < $scope.pagedItems.length - 1) {
+            $scope.currentPage++;
+        }
+    };
+    
+    $scope.setPage = function () {
+        $scope.currentPage = this.n;
+    };
 });
 
 realCenterApp.$inject = ['$scope', '$filter'];
@@ -1210,6 +1339,9 @@ realCenterApp.controller('PointsListCredentialsCtrl', function($scope, $http, $l
     $scope.itemsPerPage = 10;
     $scope.pagedItems = [];
     $scope.currentPage = 0;
+    //variables to parse dates
+    $scope.start_date = "";
+    $scope.end_date = "";
 	
 	$scope.setPageSize = function () {
 	   $scope.itemsPerPage = $scope.pageSize;	   
@@ -1345,6 +1477,8 @@ realCenterApp.controller('PointsListCredentialsCtrl', function($scope, $http, $l
 	   }
 	   
 	   var final_date = yyyy + "-" + mm + "-" + dd;
+	   $scope.start_date = initial_date;
+	   $scope.end_date = final_date;
 	   RCService.getPointsCredentialsDates(initial_date, final_date).then(function(result){
 			$scope.items = result;
 			$scope.setPageSize();
@@ -1481,6 +1615,8 @@ realCenterApp.controller('PointsListCommercesDetailsCtrl', function($scope, $htt
 
 realCenterApp.controller('PointsListCredentialsDetailsCtrl', function($scope, $http, $log, $routeParams, $filter, $location, RCService) {
 	$scope.clientid = $routeParams.clientid;
+	$scope.initial_date = $routeParams.start_date;
+	$scope.final_date = $routeParams.end_date;
 	$scope.credential_number = "";
 	$scope.items = {};
 	$scope.search = "";
@@ -1492,6 +1628,9 @@ realCenterApp.controller('PointsListCredentialsDetailsCtrl', function($scope, $h
     $scope.itemsPerPage = 10;
     $scope.pagedItems = [];
     $scope.currentPage = 0;
+    //variables to parse the dates
+    $scope.start_date = $routeParams.start_date;
+	$scope.end_date = $routeParams.end_date;
 	
 	$scope.setPageSize = function () {
 	   $scope.itemsPerPage = $scope.pageSize;	   
@@ -1510,14 +1649,42 @@ realCenterApp.controller('PointsListCredentialsDetailsCtrl', function($scope, $h
                 reverse : false
             };
 
-	$http.post(url + 'getPointsCredentialsDetails.php', { 'clientid' : $routeParams.clientid })
+    //Compare if there are dates to filter
+    if(typeof $routeParams.start_date != 'undefined') {
+    	$http.post(url + 'getPointsCredentialsDetailsDates.php', { 'clientid' : $routeParams.clientid, 'start_date' : $scope.initial_date, 
+    		'end_date' : $scope.final_date })
         .success(function(data) {
 			$scope.items = data;
 			$scope.setPageSize();
+			//set dates format
+			var parms = $routeParams.start_date.split(/[\.\-\/]/);
+	    	var dd   = parseInt(parms[2],10);
+	    	var mm   = parseInt(parms[1],10);
+	    	var yyyy = parseInt(parms[0],10);
+	    	$scope.initial_date = dd + "/" + mm + "/" + yyyy;
+
+	    	parms = $routeParams.end_date.split(/[\.\-\/]/);
+	    	dd   = parseInt(parms[2],10);
+	    	mm   = parseInt(parms[1],10);
+	    	yyyy = parseInt(parms[0],10);
+	    	$scope.final_date = dd + "/" + mm + "/" + yyyy;
         })
         .error(function(data,status,headers,config) {
             $log.error(data);
-	})
+		})
+    }else {
+    	$http.post(url + 'getPointsCredentialsDetails.php', { 'clientid' : $routeParams.clientid })
+        .success(function(data) {
+			$scope.items = data;
+			$scope.setPageSize();
+
+			$scope.initial_date = "";
+			$scope.final_date = "";
+        })
+        .error(function(data,status,headers,config) {
+            $log.error(data);
+		})
+    }
 	
 	$http.post(url + 'getClient.php', { 'clientid' : $routeParams.clientid })
         .success(function(data) {
@@ -1596,6 +1763,68 @@ realCenterApp.controller('PointsListCredentialsDetailsCtrl', function($scope, $h
     $scope.setPage = function () {
         $scope.currentPage = this.n;
     };
+
+    $scope.clearFilter = function() {
+		$scope.initial_date = "";	
+		$scope.final_date = "";
+		$http.post(url + 'getPointsCredentialsDetails.php', { 'clientid' : $routeParams.clientid })
+        .success(function(data) {
+			$scope.items = data;
+			$scope.setPageSize();
+        })
+        .error(function(data,status,headers,config) {
+            $log.error(data);
+		})
+	};
+
+	$scope.filterDates = function() {
+	   var parms = $scope.initial_date.split(/[\.\-\/]/);
+	   var dd   = parseInt(parms[0],10);
+	   var mm   = parseInt(parms[1],10);
+	   var yyyy = parseInt(parms[2],10);
+		
+		var date = new Date(yyyy,mm-1,dd,12,0,0,0);
+		var isDate = false;
+		if(mm === parseFloat(date.getMonth() + 1) && dd === date.getDate() && 
+			yyyy === date.getFullYear()){
+				isDate = true;
+		}
+
+	   if(isDate === false){
+		   alert("Formato inválido para Fecha Inicial. El formato debe ser dd/MM/yyyy");
+			return;
+	   }
+	   var initial_date = yyyy + "-" + mm + "-" + dd;
+	   parms = $scope.final_date.split(/[\.\-\/]/);
+	   dd   = parseInt(parms[0],10);
+	   mm   = parseInt(parms[1],10);
+	   yyyy = parseInt(parms[2],10);
+		
+		date = new Date(yyyy,mm-1,dd,12,0,0,0);
+		isDate = false;
+		if(mm === parseFloat(date.getMonth() + 1) && dd === date.getDate() && 
+			yyyy === date.getFullYear()){
+				isDate = true;
+		}
+
+	   if(isDate === false){
+		   alert("Formato inválido para Fecha Final. El formato debe ser dd/MM/yyyy");
+			return;
+	   }
+	   
+	   var final_date = yyyy + "-" + mm + "-" + dd;
+	   $scope.start_date = initial_date;
+	   $scope.end_date = final_date;
+	   $http.post(url + 'getPointsCredentialsDetailsDates.php', { 'clientid' : $routeParams.clientid, 'start_date' : initial_date, 
+    		'end_date' : final_date })
+        .success(function(data) {
+			$scope.items = data;
+			$scope.setPageSize();
+        })
+        .error(function(data,status,headers,config) {
+            $log.error(data);
+		})
+	};
 });
 
 realCenterApp.controller('PointsListCredentialsDetailsCommerceCtrl', function($scope, $http, $log, $routeParams, $filter, $location, RCService) {
@@ -1610,7 +1839,10 @@ realCenterApp.controller('PointsListCredentialsDetailsCommerceCtrl', function($s
     $scope.groupedItems = [];
     $scope.itemsPerPage = 10;
     $scope.pagedItems = [];
-    $scope.currentPage = 0;	
+    $scope.currentPage = 0;
+    //dates
+    $scope.initial_date = $routeParams.start_date;
+	$scope.final_date = $routeParams.end_date;
 	
 	$scope.setPageSize = function () {
 	   $scope.itemsPerPage = $scope.pageSize;	   
@@ -1632,14 +1864,39 @@ realCenterApp.controller('PointsListCredentialsDetailsCommerceCtrl', function($s
 	var clientid = $routeParams.ids.split("-")[0];
 	var commerceid = $routeParams.ids.split("-")[1];
 	$scope.clientid = clientid;
-	$http.post(url + 'getPointsCredentialsDetailsCommerce.php', { 'clientid' : clientid, 'commerceid' : commerceid })
+
+	if(typeof $scope.initial_date != 'undefined') {
+		$http.post(url + 'getPointsCredentialsDetailsCommerceDates.php', { 'clientid' : clientid, 'commerceid' : commerceid, 
+			"initial_date" : $scope.initial_date, "final_date" : $scope.final_date })
+        .success(function(data) {
+			$scope.items = data;
+			$scope.setPageSize();
+			//set dates format
+			var parms = $routeParams.start_date.split(/[\.\-\/]/);
+	    	var dd   = parseInt(parms[2],10);
+	    	var mm   = parseInt(parms[1],10);
+	    	var yyyy = parseInt(parms[0],10);
+	    	$scope.initial_date = dd + "/" + mm + "/" + yyyy;
+
+	    	parms = $routeParams.end_date.split(/[\.\-\/]/);
+	    	dd   = parseInt(parms[2],10);
+	    	mm   = parseInt(parms[1],10);
+	    	yyyy = parseInt(parms[0],10);
+	    	$scope.final_date = dd + "/" + mm + "/" + yyyy;
+        })
+        .error(function(data,status,headers,config) {
+            $log.error(data);
+		})
+	}else{
+		$http.post(url + 'getPointsCredentialsDetailsCommerce.php', { 'clientid' : clientid, 'commerceid' : commerceid })
         .success(function(data) {
 			$scope.items = data;
 			$scope.setPageSize();
         })
         .error(function(data,status,headers,config) {
             $log.error(data);
-	})
+		})
+	}
 	
 	$http.post(url + 'getClient.php', { 'clientid' : clientid })
         .success(function(data) {
@@ -1725,6 +1982,55 @@ realCenterApp.controller('PointsListCredentialsDetailsCommerceCtrl', function($s
     $scope.setPage = function () {
         $scope.currentPage = this.n;
     };
+
+    $scope.filterDates = function() {
+	   var parms = $scope.initial_date.split(/[\.\-\/]/);
+	   var dd   = parseInt(parms[0],10);
+	   var mm   = parseInt(parms[1],10);
+	   var yyyy = parseInt(parms[2],10);
+		
+		var date = new Date(yyyy,mm-1,dd,12,0,0,0);
+		var isDate = false;
+		if(mm === parseFloat(date.getMonth() + 1) && dd === date.getDate() && 
+			yyyy === date.getFullYear()){
+				isDate = true;
+		}
+
+	   if(isDate === false){
+		   alert("Formato inválido para Fecha Inicial. El formato debe ser dd/MM/yyyy");
+			return;
+	   }
+	   var initial_date = yyyy + "-" + mm + "-" + dd;
+	   parms = $scope.final_date.split(/[\.\-\/]/);
+	   dd   = parseInt(parms[0],10);
+	   mm   = parseInt(parms[1],10);
+	   yyyy = parseInt(parms[2],10);
+		
+		date = new Date(yyyy,mm-1,dd,12,0,0,0);
+		isDate = false;
+		if(mm === parseFloat(date.getMonth() + 1) && dd === date.getDate() && 
+			yyyy === date.getFullYear()){
+				isDate = true;
+		}
+
+	   if(isDate === false){
+		   alert("Formato inválido para Fecha Final. El formato debe ser dd/MM/yyyy");
+			return;
+	   }
+	   
+	   var final_date = yyyy + "-" + mm + "-" + dd;
+	   $scope.start_date = initial_date;
+	   $scope.end_date = final_date;
+	   $http.post(url + 'getPointsCredentialsDetailsCommerceDates.php', { 'clientid' : clientid, 'commerceid' : commerceid, 
+			"initial_date" : $scope.initial_date, "final_date" : $scope.final_date })
+        .success(function(data) {
+			$scope.items = data;
+			$scope.setPageSize();
+        })
+        .error(function(data,status,headers,config) {
+            $log.error(data);
+		})
+	};
 });
 
 realCenterApp.controller('ClientsVerificationCtrl', function($scope, $http, $log, $routeParams, $filter, $location, RCService) {
@@ -3275,136 +3581,6 @@ realCenterApp.controller('ReportClientPointsCtrl', function($scope, $http, $log,
 			$scope.setPageSize();
 		});
 	};
-});
-
-realCenterApp.controller('ReportClientPointsDetailsCtrl', function($scope, RCService, $filter, $routeParams) {
-	$scope.name = "";
-	$scope.points = "";
-	$scope.isLogin = false;
-	
-	$scope.items = {};
-	$scope.noValidPoints = {};
-	$scope.search = "";
-	$scope.pageSize = "10";
-	//variables to table pagination 
-	$scope.gap = 5;    
-    $scope.filteredItems = [];
-    $scope.groupedItems = [];
-    $scope.itemsPerPage = 10;
-    $scope.pagedItems = [];
-    $scope.currentPage = 0;
-	
-	RCService.getPointsByClientId($routeParams.clientId).then(function(result){
-		$scope.items = result;
-		$scope.setPageSize();
-	});
-
-	RCService.getClient($routeParams.clientId).then(function(result){
-		$scope.name = result.name;
-	});
-	
-	RCService.getPointsByClient($routeParams.clientId).then(function(result){
-		if(result.total_points == null){
-			$scope.points = 0;
-		}else{
-			$scope.points = result.total_points;
-		}		
-	});
-
-	RCService.getVerificationPointsById($routeParams.clientId).then(function(result){
-		if(result[0] == null){
-			$scope.noValidPoints = {};
-		}else{
-			$scope.noValidPoints = result;
-		}	
-	});
-	
-	$scope.setPageSize = function () {
-	   $scope.itemsPerPage = $scope.pageSize;
-	   var decimalGap = $scope.items.length / $scope.itemsPerPage;
-	   var roundGap = Math.round($scope.items.length / $scope.itemsPerPage);
-	   if(roundGap < decimalGap){
-		   roundGap++;
-	   }
-	   
-	   $scope.gap = roundGap;
-	   $scope.search();
-	};
-    // init
-    $scope.sort = {       
-                sortingOrder : 'id',
-                reverse : false
-            };
-				
-    var searchMatch = function (haystack, needle) {
-        if (!needle) {
-            return true;
-        }
-        return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
-    };
-
-    // init the filtered items
-    $scope.search = function () {
-        $scope.filteredItems = $filter('filter')($scope.items, function (item) {
-            for(var attr in item) {
-				//alert(attr);
-                if (searchMatch(item[attr], $scope.query))
-                    return true;
-            }
-            return false;
-        });
-        // take care of the sorting order
-        if ($scope.sort.sortingOrder !== '') {
-            $scope.filteredItems = $filter('orderBy')($scope.filteredItems, $scope.sort.sortingOrder, $scope.sort.reverse);
-        }
-        $scope.currentPage = 0;
-        // now group by pages
-        $scope.groupToPages();
-    };
-    
-    // calculate page in place
-    $scope.groupToPages = function () {
-        $scope.pagedItems = [];
-        
-        for (var i = 0; i < $scope.filteredItems.length; i++) {
-            if (i % $scope.itemsPerPage === 0) {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
-            } else {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
-            }
-        }
-    };
-    
-    $scope.range = function (size,start, end) {
-        var ret = [];        
-        console.log(size,start, end);
-                      
-        if (size < end) {
-            end = size;
-            start = size-$scope.gap;
-        }
-        for (var i = start; i < end; i++) {
-            ret.push(i);
-        }        
-         console.log(ret);        
-        return ret;
-    };
-    
-    $scope.prevPage = function () {
-        if ($scope.currentPage > 0) {
-            $scope.currentPage--;
-        }
-    };
-    
-    $scope.nextPage = function () {
-        if ($scope.currentPage < $scope.pagedItems.length - 1) {
-            $scope.currentPage++;
-        }
-    };
-    
-    $scope.setPage = function () {
-        $scope.currentPage = this.n;
-    };
 });
 
 realCenterApp.controller('ReportClientRegisterCtrl', function($scope, $http, $log, $routeParams, $filter, $location, RCService) {

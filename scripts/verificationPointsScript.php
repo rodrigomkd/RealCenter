@@ -30,12 +30,13 @@
 
 			$sql = "SELECT clientid, register_date, DATE_ADD(register_date, INTERVAL 1 year) AS register_date2, DATE_ADD(register_date, INTERVAL 2 year) AS register_date3, DATE_ADD(register_date, INTERVAL 3 year) AS register_date4 FROM `client`";
 			$clients = $this->qryData($sql);
-
+			echo "count clientL" . count($clients);
 			if(count($clients) > 0) {
 				foreach($clients as $row => $val) {
 					if($val->register_date2 < $current_date){
 						$next_date = $val->register_date2;
 						$sql = "SELECT SUM(points) AS points FROM points WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->register_date . "' AND '" . $val->register_date2 . "'";
+						echo "sql" . $sql;
 						$points = $this->qryRow($sql);
 
 						$setpoints = 0;

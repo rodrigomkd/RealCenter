@@ -44,7 +44,13 @@ realCenterApp.config(['$routeProvider', '$locationProvider' , function($routePro
 		}).when('/list-points-credential-details/:clientid',{
 			templateUrl: 'intranet/templates/list_points_credentials_details.html',
 			controller: 'PointsListCredentialsDetailsCtrl'
+		}).when('/list-points-credential-details/:clientid/:start_date/:end_date',{
+			templateUrl: 'intranet/templates/list_points_credentials_details.html',
+			controller: 'PointsListCredentialsDetailsCtrl'
 		}).when('/list-points-credential-details-commerce/:ids',{
+			templateUrl: 'intranet/templates/list_points_credentials_details_commerce.html',
+			controller: 'PointsListCredentialsDetailsCommerceCtrl'
+		}).when('/list-points-credential-details-commerce/:ids/:start_date/:end_date',{
 			templateUrl: 'intranet/templates/list_points_credentials_details_commerce.html',
 			controller: 'PointsListCredentialsDetailsCommerceCtrl'
 				
@@ -78,6 +84,9 @@ realCenterApp.config(['$routeProvider', '$locationProvider' , function($routePro
 		}).when('/register-user/:userid',{
 			templateUrl: 'intranet/templates/register.html',
 			controller: 'RegisterCtrl'
+		}).when('/report-client-points-details/:clientId',{
+            templateUrl: 'intranet/templates/report_client_points_details.html',
+            controller: 'ReportClientPointsDetailsCtrl'
 			
 		// LOGIN
 		}).when('/login',{
