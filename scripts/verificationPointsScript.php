@@ -7,7 +7,6 @@
 	class CRON {
 		private $con = false;
 		private $data = array();
-		private $points_per_year = 25000;
 		
 		public function __construct() {
 			$this->con = new mysqli(__HOST__, __USER__, __PASS__, __BASE__);
@@ -23,6 +22,9 @@
 		public function execute() {
 			
 			echo "Execute CRON at " . date("h:i:sa");
+			echo "Truncate verification_points table. ";
+			$sql_truncate = "DELETE FROM verification_points";
+			$this->qryFire($sql_truncate);
 			
 			$current_date = date("Y-m-d");
 			$next_date = null;
@@ -44,10 +46,9 @@
 							$setpoints = $points->points;
 						}
 
-						if($setpoints < $this->points_per_year){
-							$sql = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->register_date ."' AND '" . $val->register_date2 . "'";
-							$this->qryFire($sql);
-						}
+						//expire points 2016
+						$sql = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->register_date ."' AND '" . $val->register_date2 . "'";
+						$this->qryFire($sql);
 
 						$sql = "INSERT INTO verification_points (clientid, start_date, next_date, points) values (" . $val->clientid . ", '" . $val->register_date . "', DATE_ADD('" . $val->register_date. "', INTERVAL 1 YEAR), " .$setpoints. ")";
 						$this->qryFire($sql);
@@ -63,10 +64,9 @@
 							$setpoints = $points->points;
 						}
 
-						if($setpoints < $this->points_per_year){
-							$sql = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->register_date2 ."' AND '" . $val->register_date3 . "'";
-							$this->qryFire($sql);
-						}
+						//expire points 2017
+						$sql = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->register_date2 ."' AND '" . $val->register_date3 . "'";
+						$this->qryFire($sql);
 
 						$sql = "INSERT INTO verification_points (clientid, start_date, next_date, points) values (" . $val->clientid . ", '" . $val->register_date2 . "', DATE_ADD('" . $val->register_date2. "', INTERVAL 1 YEAR), " .$setpoints. ")";
 						$this->qryFire($sql);
@@ -82,10 +82,9 @@
 							$setpoints = $points->points;
 						}
 
-						if($setpoints < $this->points_per_year){
-							$sql = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->register_date3 ."' AND '" . $val->register_date4 . "'";
-							$this->qryFire($sql);
-						}
+						//expire points 2018
+						$sql = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->register_date3 ."' AND '" . $val->register_date4 . "'";
+						$this->qryFire($sql);
 
 						$sql = "INSERT INTO verification_points (clientid, start_date, next_date, points) values (" . $val->clientid . ", '" . $val->register_date3 . "', DATE_ADD('" . $val->register_date3. "', INTERVAL 1 YEAR), " .$setpoints. ")";
 						$this->qryFire($sql);

@@ -7,7 +7,6 @@
 	class CRON {
 		private $con = false;
 		private $data = array();
-		private $points_per_year = 25000;
 		
 		public function __construct() {
 			$this->con = new mysqli(__HOST__, __USER__, __PASS__, __BASE__);
@@ -64,10 +63,9 @@
 					echo "id: " . $val->clientid;
 					$this->qryFire($sql4);
 					
-					if($setpoints < $this->points_per_year){
-						$sql5 = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->start_date ."' AND '" . $val->next_date . "'";
-						$this->qryFire($sql5);
-					}
+					//expire points.
+					$sql5 = "UPDATE points SET valid = 0 WHERE clientid = " . $val->clientid . " AND register_date BETWEEN '" . $val->start_date ."' AND '" . $val->next_date . "'";
+					$this->qryFire($sql5);
 				}
 			} 
 					
