@@ -286,7 +286,6 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 		   dd = "0" + dd;
 	   }
 	   client.birthdate = yyyy + "-" + mm + "-" + dd;
-	   $scope.client.register_date = $filter('date')(new Date(), 'yyyy-MM-dd');
 	   
 	   //set uppercase
 	   client.credential_number = client.credential_number.toUpperCase();
@@ -294,7 +293,8 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 	   client.last_name = client.last_name.toUpperCase();
 	   client.colony = client.colony.toUpperCase();
 
-	   if($scope.clientid == 0){		   
+	   if($scope.clientid == 0){	
+	   	   $scope.client.register_date = $filter('date')(new Date(), 'yyyy-MM-dd');	   
 		   RCService.getClientByCredential(client.credential_number.trim()).then(function(result_credential){
 				if(typeof result_credential.credential_number === "undefined"){				 
 				   var referenceid = Date.now();
@@ -354,7 +354,7 @@ realCenterApp.controller('ClientViewCtrl', function($scope, $http, $log, $routeP
 				
 		   $http.post(url + 'updateClient.php', { 'credential_number' : client.credential_number, 
 			'name': client.name, 'last_name': client.last_name, 'email': client.email, 
-			'phone': client.phone, 'birthdate': client.birthdate, 'register_date': client.register_date,
+			'phone': client.phone, 'birthdate': client.birthdate,
 			'colony': client.colony, 'zip': client.zip, 'gender': client.gender, 'active': $scope.client.active, 
 			'password': $scope.client.password, 'clientid': $scope.client.clientid })
             .success(function(data) {
