@@ -1,8 +1,8 @@
 <?php
 	define("__HOST__", "localhost");
-	define("__USER__", "rea1908403561174");
-	define("__PASS__", "k0G%Gp7160LWC");
-	define("__BASE__", "rea1908403561174");
+	define("__USER__", "realcent_tarjeta");
+	define("__PASS__", "bw[4z-CwRge8");
+	define("__BASE__", "realcent_tarjeta");
 	
 	class DB {
 		private $con = false;
@@ -59,6 +59,5 @@
 			$this->con->close();
 			return $this->data;
 		}
-		
 	}
 ?>
