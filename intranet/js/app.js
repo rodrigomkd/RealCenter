@@ -5,120 +5,120 @@ realCenterApp.config(['$routeProvider', '$locationProvider' , function($routePro
 	$routeProvider
 		// ---------------------------------------------------------------------------		
 		.when('/home',{
-			templateUrl: 'intranet/index.html',	
+			templateUrl: 'index.html',	
 		// CLIENTS
 		// ---------------------------------------------------------------------------		
 		}).when('/list-clients',{
-			templateUrl: 'intranet/templates/points.html',
+			templateUrl: 'templates/points.html',
 			controller: 'PointsCtrl'
 		}).when('/client/:clientId',{
-			templateUrl: 'intranet/templates/view-client.html',
+			templateUrl: 'templates/view-client.html',
 			controller: 'ClientViewCtrl'
 		}).when('/list-clients-verification/:active',{
-			templateUrl: 'intranet/templates/list_clients_verification.html',
+			templateUrl: 'templates/list_clients_verification.html',
 			controller: 'ClientsVerificationCtrl'
 		}).when('/list-client-comments/:clientId',{
-			templateUrl: 'intranet/templates/list_client_comments.html',
+			templateUrl: 'templates/list_client_comments.html',
 			controller: 'ListClientCommentsCtrl'
 		}).when('/view-client-comment/:commentId',{
-			templateUrl: 'intranet/templates/view_client_comment.html',
+			templateUrl: 'templates/view_client_comment.html',
 			controller: 'ClientCommentCtrl'
 					
 		// POINTS
 		// ---------------------------------------------------------------------------		
 		}).when('/point',{
-			templateUrl: 'intranet/templates/view-point.html',
+			templateUrl: 'templates/view-point.html',
 			controller: 'PointViewCtrl'
 		}).when('/list-points',{
-			templateUrl: 'intranet/templates/list-points.html',
+			templateUrl: 'templates/list-points.html',
 			controller: 'PointsListCtrl'
 		}).when('/list-points-commerce',{
-			templateUrl: 'intranet/templates/list_points_commerces.html',
+			templateUrl: 'templates/list_points_commerces.html',
 			controller: 'PointsListCommercesCtrl'
 		}).when('/list-points-commerce-details/:commerceid',{
-			templateUrl: 'intranet/templates/list_points_commerces_details.html',
+			templateUrl: 'templates/list_points_commerces_details.html',
 			controller: 'PointsListCommercesDetailsCtrl'
 		}).when('/list-points-credential',{
-			templateUrl: 'intranet/templates/list_points_credentials.html',
+			templateUrl: 'templates/list_points_credentials.html',
 			controller: 'PointsListCredentialsCtrl'
 		}).when('/list-points-credential-details/:clientid',{
-			templateUrl: 'intranet/templates/list_points_credentials_details.html',
+			templateUrl: 'templates/list_points_credentials_details.html',
 			controller: 'PointsListCredentialsDetailsCtrl'
 		}).when('/list-points-credential-details/:clientid/:start_date/:end_date',{
-			templateUrl: 'intranet/templates/list_points_credentials_details.html',
+			templateUrl: 'templates/list_points_credentials_details.html',
 			controller: 'PointsListCredentialsDetailsCtrl'
 		}).when('/list-points-credential-details-commerce/:ids',{
-			templateUrl: 'intranet/templates/list_points_credentials_details_commerce.html',
+			templateUrl: 'templates/list_points_credentials_details_commerce.html',
 			controller: 'PointsListCredentialsDetailsCommerceCtrl'
 		}).when('/list-points-credential-details-commerce/:ids/:start_date/:end_date',{
-			templateUrl: 'intranet/templates/list_points_credentials_details_commerce.html',
+			templateUrl: 'templates/list_points_credentials_details_commerce.html',
 			controller: 'PointsListCredentialsDetailsCommerceCtrl'
 				
 		// POINTS
 		// ---------------------------------------------------------------------------
 		}).when('/points-register',{
-			templateUrl: 'intranet/templates/points_register.html',
+			templateUrl: 'templates/points_register.html',
 			controller: 'PointsRegisterCtrl'
 		
 		// COMMERCES
 		}).when('/list-categories',{
-			templateUrl: 'intranet/templates/list_categories.html',
+			templateUrl: 'templates/list_categories.html',
 			controller: 'CategoriesCtrl'
 		}).when('/view-category/:commercetypeid',{
-			templateUrl: 'intranet/templates/view_category.html',
+			templateUrl: 'templates/view_category.html',
 			controller: 'CategoryCtrl'
 		}).when('/list-commerces',{
-			templateUrl: 'intranet/templates/list_commerces.html',
+			templateUrl: 'templates/list_commerces.html',
 			controller: 'CommercesCtrl'
 		}).when('/view-commerce/:commerceid',{
-			templateUrl: 'intranet/templates/view_commerce.html',
+			templateUrl: 'templates/view_commerce.html',
 			controller: 'CommerceViewCtrl'
 			
 		// USERS
 		}).when('/list-users',{
-			templateUrl: 'intranet/templates/list_users.html',
+			templateUrl: 'templates/list_users.html',
 			controller: 'UsersCtrl'
 		}).when('/view-user/:userid',{
-			templateUrl: 'intranet/templates/view_user.html',
+			templateUrl: 'templates/view_user.html',
 			controller: 'UserViewCtrl'
 		}).when('/register-user/:userid',{
-			templateUrl: 'intranet/templates/register.html',
+			templateUrl: 'templates/register.html',
 			controller: 'RegisterCtrl'
 		}).when('/report-client-points-details/:clientId',{
-            templateUrl: 'intranet/templates/report_client_points_details.html',
+            templateUrl: 'templates/report_client_points_details.html',
             controller: 'ReportClientPointsDetailsCtrl'
 			
 		// LOGIN
 		}).when('/login',{
-			templateUrl: 'intranet/templates/login.html',
+			templateUrl: 'templates/login.html',
 			controller: 'LoginCtrl'
 		}).when('/request-password',{
-			templateUrl: 'intranet/templates/request_password.html',
+			templateUrl: 'templates/request_password.html',
 			controller: 'RequestPasswordCtrl'
 		}).when('/change-password',{
-			templateUrl: 'intranet/templates/change_password.html',
+			templateUrl: 'templates/change_password.html',
 			controller: 'ChangePasswordCtrl'
 			
 		// REPORTS
 		}).when('/report-card-points',{
-			templateUrl: 'intranet/templates/report_card_points.html',
+			templateUrl: 'templates/report_card_points.html',
 			controller: 'ReportCardPointsCtrl'
 		}).when('/report-card-points-acum',{
-			templateUrl: 'intranet/templates/report_card_points_acum.html',
+			templateUrl: 'templates/report_card_points_acum.html',
 			controller: 'ReportCardPointsAcumCtrl'
 		}).when('/report-client-points',{
-			templateUrl: 'intranet/templates/report_client_points.html',
+			templateUrl: 'templates/report_client_points.html',
 			controller: 'ReportClientPointsCtrl'
 		}).when('/report-client-register',{
-			templateUrl: 'intranet/templates/report_client_register.html',
+			templateUrl: 'templates/report_client_register.html',
 			controller: 'ReportClientRegisterCtrl'
 		}).when('/report-client-points-details/:clientId',{
-			templateUrl: 'intranet/templates/report_client_points_details.html',
+			templateUrl: 'templates/report_client_points_details.html',
 			controller: 'ReportClientPointsDetailsCtrl'
 		
 		//CONFIG
 		}).when('/view-config-email',{
-			templateUrl: 'intranet/templates/view_config_email.html',
+			templateUrl: 'templates/view_config_email.html',
 			controller: 'ViewConfigEmailCtrl'
 		// DEFAULT
 		// ---------------------------------------------------------------------------		
